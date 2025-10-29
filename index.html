@@ -63,16 +63,22 @@
             border-radius: 10px;
             border: 2px solid #f1f5f9;
         }
-        .age-marker {
-            position: relative;
-            display: block;
-            text-align: center;
+        /* Style cho age markers container */
+        .age-markers-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .age-label {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f8fafc;
+            padding: 0.5rem 1rem;
             font-weight: 600;
-            font-size: 0.8rem;
-            padding: 4px;
-            margin-top: -1px;
+            color: #334155;
             border-top: 3px solid;
             border-bottom: 3px solid;
+            border-color: inherit;
         }
         
         .color-group-1 { border-color: #fcd34d; background-color: #fef9c3; } /* Mầm non */
@@ -261,7 +267,7 @@
                 {
                     id: 1,
                     subject: "Lập trình",
-                    title: "Mầm non công nghệ",
+                    title: "Bé Sáng Tạo Số",
                     ageGroup: "5-7",
                     modules: 8,
                     colorClass: "color-group-1",
@@ -278,7 +284,7 @@
                 {
                     id: 2,
                     subject: "Lập trình",
-                    title: "Bé làm Game (Tổng quan)",
+                    title: "Game Creator Lab",
                     ageGroup: "7-11",
                     modules: 12,
                     colorClass: "color-group-2",
@@ -298,7 +304,7 @@
                 {
                     id: 3,
                     subject: "Robot",
-                    title: "Khám phá Robotics",
+                    title: "Khám Phá Robotics",
                     ageGroup: "7-11",
                     modules: 12,
                     colorClass: "color-group-3",
@@ -318,7 +324,7 @@
                 {
                     id: 4,
                     subject: "3D",
-                    title: "Digi Art: Stem Art",
+                    title: "Hoạ Sĩ Công Nghệ",
                     ageGroup: "7-11",
                     modules: 12,
                     colorClass: "color-group-4",
@@ -339,7 +345,7 @@
                 {
                     id: 5,
                     subject: "Lập trình Web",
-                    title: "Lập trình Web & UI/UX",
+                    title: "Lập Trình Web & UI/UX",
                     ageGroup: "12-15",
                     modules: 8,
                     colorClass: "color-group-5",
@@ -356,7 +362,7 @@
                 {
                     id: 10,
                     subject: "Lập trình Game",
-                    title: "Lập trình Game (2D/3D)",
+                    title: "Roblox Coding Lab",
                     ageGroup: "12-15",
                     modules: 8,
                     colorClass: "color-group-5",
@@ -373,7 +379,7 @@
                 {
                     id: 11,
                     subject: "Lập trình App",
-                    title: "Lập trình Ứng dụng & Dữ liệu",
+                    title: "App Programming Lab",
                     ageGroup: "12-15",
                     modules: 8,
                     colorClass: "color-group-5",
@@ -390,8 +396,8 @@
                 /* CÁC KHÓA CÒN LẠI */
                 {
                     id: 6,
-                    subject: "Robot",
-                    title: "Thế giới vạn vật thông minh",
+                    subject: "Robot & IOT",
+                    title: "IOT Explorer",
                     ageGroup: "12-15",
                     modules: 12,
                     colorClass: "color-group-6",
@@ -408,8 +414,8 @@
                 },
                 {
                     id: 7,
-                    subject: "3D",
-                    title: "Digi Style: Multimedia",
+                    subject: "3D Truyền thông đa phương tiện",
+                    title: "Digital Arts Studio",
                     ageGroup: "12-15",
                     modules: 12,
                     colorClass: "color-group-8",
@@ -427,7 +433,7 @@
                 {
                     id: 8,
                     subject: "AI",
-                    title: "AI & Học máy cơ bản",
+                    title: "Khám Phá Trí Tuệ Nhân Tạo",
                     ageGroup: "7-11",
                     modules: 8,
                     colorClass: "color-group-7",
@@ -518,7 +524,6 @@
             function createTimeline(course) {
                 let curriculumHTML = '';
                 course.curriculum.forEach(step => {
-                    // Thêm sự kiện onclick vào mỗi ô Level
                     const levelNameEncoded = encodeURIComponent(step.name);
                     curriculumHTML += `
                         <div class="timeline-step" onclick="openModal(${course.id}, ${step.unit}, '${step.name}')">
@@ -528,18 +533,19 @@
                     `;
                 });
 
-                let ageMarkersHTML = '';
-                course.ageMarkers.forEach(marker => {
-                    const gridSpan = `grid-column: ${marker.start} / ${marker.end + 1}`;
-                    ageMarkersHTML += `<div class="age-marker ${course.timelineHeaderClass}" style="${gridSpan}">${marker.range}</div>`;
-                });
+                // Tạo age markers section
+                let ageMarkersHTML = `
+                    <div class="age-markers-container mb-2 flex">
+                        <div class="age-label ${course.timelineHeaderClass} text-sm font-semibold">
+                            ${course.ageGroup} tuổi
+                        </div>
+                    </div>
+                `;
 
                 return `
                     <div class="mt-4">
-                        <div class="grid" style="grid-template-columns: repeat(${course.modules}, minmax(100px, 1fr));">
-                            ${ageMarkersHTML}
-                        </div>
-                        <div class="timeline-container relative flex w-full mt-2 bg-white rounded-lg shadow-inner">
+                        ${ageMarkersHTML}
+                        <div class="timeline-container relative flex w-full bg-white rounded-lg shadow-inner">
                             ${curriculumHTML}
                         </div>
                     </div>
@@ -592,8 +598,11 @@
                     } else if (activeFilters.subject === 'Lập trình') {
                         // Nút "Lập trình (Tổng hợp)" sẽ hiển thị tất cả các khóa Lập trình cụ thể.
                         subjectMatch = genericProgrammingSubjects.includes(cardSubject);
+                    } else if (activeFilters.subject === 'Robot') {
+                        // Nút "Robot" sẽ hiển thị các khóa "Robot" và "Robot & IOT"
+                        subjectMatch = cardSubject === 'Robot' || cardSubject === 'Robot & IOT';
                     } else if (activeFilters.subject === cardSubject) {
-                        // Lọc theo khóa cụ thể (Robot, AI, Lập trình Web,...)
+                        // Lọc theo khóa cụ thể (AI, Lập trình Web, 3D,...)
                         subjectMatch = true;
                     } else {
                         subjectMatch = false;
