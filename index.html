@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lộ Trình Học Tương Tác</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Calm Harmony (Slate, White, Blue Accent) -->
+    <!-- Application Structure Plan: Designed a filter-based SPA. Users interact via Age/Subject buttons. A JS function filters a data array and toggles card visibility. Each card visualizes a course's 12-part curriculum as a responsive HTML/CSS timeline. This is more usable and responsive than the original wide table, allowing users to "query" the curriculum. Now includes a dynamic modal for deep-dive into each Level's 12 lessons. -->
+    <!-- Visualization & Content Choices: 1. Report Info (Table Rows) -> Goal: Organize/Inform -> Viz: Course Cards (HTML/Tailwind) -> Interaction: JS Filter (Show/Hide). 2. Report Info (12-part curriculum) -> Goal: Show Process/Change -> Viz: 12-step Timeline (HTML/Tailwind) -> Interaction: Click on Level to open Modal (New Feature). 3. Level Details (New Data) -> Goal: Deep Inform -> Viz: Modal with structured list and image placeholders -> Interaction: Close button. 4. Report Info (Tech names) -> Goal: Inform (Summary) -> Viz: Horizontal Bar Chart (Chart.js/Canvas) -> Interaction: Tooltip. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 500px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 500px; }
+        }
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(66, 153, 225, 0.5);
+        }
+        .timeline-step {
+            flex: 1 1 0;
+            min-width: 100px;
+            padding: 8px;
+            border-right: 2px dashed #e2e8f0;
+            cursor: pointer; /* Add pointer for interaction */
+            transition: background-color 0.2s;
+        }
+        .timeline-step:hover {
+            background-color: #f1f5f9;
+        }
+        .timeline-step:last-child {
+            border-right: none;
+        }
+        .timeline-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
+        }
+        .timeline-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .timeline-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .timeline-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+            border: 2px solid #f1f5f9;
+        }
+        .age-marker {
+            position: relative;
+            display: block;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 4px;
+            margin-top: -1px;
+            border-top: 3px solid;
+            border-bottom: 3px solid;
+        }
+        
+        .color-group-1 { border-color: #fcd34d; background-color: #fef9c3; } /* Mầm non */
+        .color-group-2 { border-color: #fca5a5; background-color: #fee2e2; } /* Lập trình Cấp 1 */
+        .color-group-3 { border-color: #93c5fd; background-color: #dbeafe; } /* Robot Cấp 1 */
+        .color-group-4 { border-color: #86efac; background-color: #d1fae5; } /* 3D Cấp 1 */
+        .color-group-5 { border-color: #fca5a5; background-color: #fee2e2; } /* Lập trình Cấp 2 */
+        .color-group-6 { border-color: #67e8f9; background-color: #cffafe; } /* Robot Cấp 2 */
+        .color-group-7 { border-color: #e9d5ff; background-color: #f3e8ff; } /* AI */
+        .color-group-8 { border-color: #a78bfa; background-color: #ede9fe; } /* 3D Cấp 2 */
+
+        .timeline-header-1 { border-color: #fcd34d; }
+        .timeline-header-2 { border-color: #fca5a5; }
+        .timeline-header-3 { border-color: #93c5fd; }
+        .timeline-header-4 { border-color: #86efac; }
+        .timeline-header-5 { border-color: #fca5a5; }
+        .timeline-header-6 { border-color: #67e8f9; }
+        .timeline-header-7 { border-color: #e9d5ff; } /* AI */
+        .timeline-header-8 { border-color: #a78bfa; } /* 3D Cấp 2 */
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-6 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-700">Lộ Trình Học Kỹ Thuật Số</h1>
+            <p class="text-slate-600 mt-2 text-lg">Khám phá các chương trình học lập trình, robot và thiết kế.</p>
+        </div>
+    </header>
+
+    <nav class="container mx-auto px-6 py-4 sticky top-0 bg-slate-100 z-10 shadow-sm">
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div class_id="age-filters" class="flex flex-wrap justify-center gap-2">
+                <span class="font-semibold self-center pr-2">Chọn độ tuổi:</span>
+                <button data-filter-type="age" data-filter-value="all" class="filter-btn active bg-blue-600 text-white px-4 py-2 rounded-full shadow-md text-sm font-medium">Tất cả độ tuổi</button>
+                <button data-filter-type="age" data-filter-value="5-7" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Mầm non (5-7)</button>
+                <button data-filter-type="age" data-filter-value="7-11" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Cấp 1 (7-11)</button>
+                <button data-filter-type="age" data-filter-value="12-15" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Cấp 2 (12-15)</button>
+            </div>
+            
+            <div id="subject-filters" class="flex flex-wrap justify-center gap-2">
+                <span class="font-semibold self-center pr-2">Lĩnh vực:</span>
+                <button data-filter-type="subject" data-filter-value="all" class="filter-btn active bg-blue-600 text-white px-4 py-2 rounded-full shadow-md text-sm font-medium">Tất cả</button>
+                <button data-filter-type="subject" data-filter-value="Lập trình" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Lập trình (Tổng hợp)</button>
+                <button data-filter-type="subject" data-filter-value="Lập trình Web" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Lập trình Web</button>
+                <button data-filter-type="subject" data-filter-value="Lập trình Game" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Lập trình Game</button>
+                <button data-filter-type="subject" data-filter-value="Lập trình App" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Lập trình App</button>
+                <button data-filter-type="subject" data-filter-value="Robot" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Robot</button>
+                <button data-filter-type="subject" data-filter-value="3D" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">3D & Đa phương tiện</button>
+                <button data-filter-type="subject" data-filter-value="AI" class="filter-btn bg-white text-slate-700 px-4 py-2 rounded-full shadow text-sm font-medium">Trí tuệ Nhân tạo (AI)</button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="courses-container" class="container mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+    </main>
+    
+    <section class="container mx-auto px-6 py-12">
+        <div class="bg-white p-6 rounded-2xl shadow-xl">
+            <h2 class="text-2xl font-bold text-center mb-6 text-blue-700">Phân Tích Công Nghệ Trong Chương Trình Học</h2>
+            <p class="text-center text-slate-600 mb-8">Biểu đồ này thống kê số lượng học phần có sử dụng các công nghệ và phần mềm phổ biến trong toàn bộ lộ trình học. Điều này giúp bạn có cái nhìn tổng quan về các kỹ năng cốt lõi mà học viên sẽ được tiếp cận.</p>
+            <div class="chart-container">
+                <canvas id="techChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-8 text-slate-500 text-sm">
+        <p>Ứng dụng tương tác được tạo từ dữ liệu chương trình học.</p>
+    </footer>
+
+    <!-- MODAL HIỂN THỊ CHI TIẾT LEVEL -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4" onclick="closeModal(event)">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="sticky top-0 bg-white p-6 border-b border-slate-200 flex justify-between items-center">
+                <h3 id="modalTitle" class="text-2xl font-bold text-blue-700">Chi tiết Level</h3>
+                <button onclick="closeModal()" class="text-slate-500 hover:text-slate-800 transition">
+                    <span class="text-2xl">&times;</span>
+                </button>
+            </div>
+            <div id="modalContent" class="p-6">
+                <!-- Nội dung chi tiết các bài học sẽ được chèn vào đây -->
+            </div>
+        </div>
+    </div>
+    <!-- KẾT THÚC MODAL -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const lessonData = [
+                // Dữ liệu chi tiết cho Level 1 của khóa Mầm non công nghệ (ID 1, Level 1) - 12 bài đầy đủ
+                {
+                    courseId: 1, levelUnit: 1, title: "Level 1: Khám phá thế giới",
+                    lessons: [
+                        { name: "Bài 1: Làm quen với giao diện", objective: "Nhận biết các khu vực làm việc cơ bản.", description: "Giới thiệu môi trường lập trình kéo thả đơn giản (Block-based).", image: "https://placehold.co/400x200/c7f0db/0e7490?text=Giao+diện+Block" },
+                        { name: "Bài 2: Điều khiển nhân vật", objective: "Học cách di chuyển và dừng lại.", description: "Sử dụng các khối lệnh di chuyển cơ bản: tiến, lùi, xoay.", image: "https://placehold.co/400x200/fecaca/9f1239?text=Lệnh+di+chuyển" },
+                        { name: "Bài 3: Màu sắc và Hình khối", objective: "Phân biệt các màu sắc chính và hình dạng.", description: "Tạo các đối tượng có màu sắc và hình dạng khác nhau.", image: "https://placehold.co/400x200/bfdbfe/1d4ed8?text=Hình+khối+cơ+bản" },
+                        { name: "Bài 4: Lặp lại hành động", objective: "Hiểu khái niệm vòng lặp cơ bản.", description: "Sử dụng khối lệnh lặp để tiết kiệm thời gian và tạo chuyển động tuần hoàn.", image: "https://placehold.co/400x200/fef08a/a16207?text=Khối+lệnh+Loop" },
+                        { name: "Bài 5: Lập trình âm thanh", objective: "Tạo hiệu ứng âm thanh cho các hành động.", description: "Gán âm thanh cho nhân vật khi di chuyển hoặc chạm đối tượng.", image: "https://placehold.co/400x200/d8b4fe/6b21a8?text=Hiệu+ứng+Sound" },
+                        { name: "Bài 6: Xử lý sự kiện (Events)", objective: "Hiểu mối quan hệ nguyên nhân - kết quả.", description: "Lập trình để nhân vật phản ứng khi có sự kiện (nhấp chuột, chạm).", image: "https://placehold.co/400x200/a7f3d0/047857?text=Khối+lệnh+Event" },
+                        { name: "Bài 7: Lập trình đối thoại", objective: "Sử dụng các khối lệnh hiển thị văn bản.", description: "Tạo các đoạn hội thoại đơn giản giữa các nhân vật.", image: "https://placehold.co/400x200/fecdd3/e11d48?text=Tạo+Dialogue" },
+                        { name: "Bài 8: Vẽ bằng code", objective: "Sử dụng khối bút vẽ để tạo hình họa.", description: "Vẽ các đường nét và hình học đơn giản thông qua code.", image: "https://placehold.co/400x200/fdba74/c2410c?text=Vẽ+Pen" },
+                        { name: "Bài 9: Tương tác chạm", objective: "Phát hiện va chạm giữa hai đối tượng.", description: "Lập trình phản ứng khi hai nhân vật chạm vào nhau.", image: "https://placehold.co/400x200/bae6fd/0369a1?text=Va+chạm+Collision" },
+                        { name: "Bài 10: Xây dựng bối cảnh", objective: "Thiết kế phông nền và môi trường game.", description: "Sử dụng công cụ vẽ để tạo bối cảnh cho câu chuyện.", image: "https://placehold.co/400x200/f5d0fe/701a75?text=Thiết+kế+Background" },
+                        { name: "Bài 11: Dự án Game nhỏ", objective: "Tổng hợp kiến thức để tạo sản phẩm.", description: "Hoàn thiện một trò chơi đơn giản với cốt truyện.", image: "https://placehold.co/400x200/fca5a5/7f1d1d?text=Game+mini+Project" },
+                        { name: "Bài 12: Kể chuyện lập trình", objective: "Trình bày câu chuyện của mình trước lớp.", description: "Phát triển kỹ năng thuyết trình về sản phẩm đã tạo.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Thuyết+trình+Story" }
+                    ]
+                },
+                // Dữ liệu chi tiết cho Level 4 của khóa Bé làm Game (ID 2, Level 4) - 12 bài đầy đủ
+                {
+                    courseId: 2, levelUnit: 4, title: "Level 4: Tinker - Lập trình cơ bản",
+                    lessons: [
+                        { name: "Bài 1: Khái niệm về Biến (Variables)", objective: "Làm quen với việc lưu trữ dữ liệu tạm thời.", description: "Sử dụng biến để tính điểm, đếm thời gian trong trò chơi.", image: "https://placehold.co/400x200/fee2e2/991b1b?text=Biến+số+Variables" },
+                        { name: "Bài 2: Cấu trúc điều kiện IF/ELSE", objective: "Hiểu logic nếu/thì cơ bản.", description: "Tạo ra các quyết định đơn giản trong game, ví dụ: nếu hết máu thì game over.", image: "https://placehold.co/400x200/dbeafe/2563eb?text=Điều+kiện+Logic" },
+                        { name: "Bài 3: Vòng lặp nâng cao (FOR/WHILE)", objective: "Làm chủ các loại vòng lặp khác nhau.", description: "Sử dụng vòng lặp để tạo ra các đối tượng hàng loạt hoặc hoạt ảnh phức tạp.", image: "https://placehold.co/400x200/f0f9ff/0e7490?text=Vòng+lặp+For" },
+                        { name: "Bài 4: Xử lý Dữ liệu Chuỗi (Strings)", objective: "Thao tác với văn bản và tin nhắn.", description: "Ứng dụng trong việc tạo tên nhân vật, tin nhắn trò chơi.", image: "https://placehold.co/400x200/fefce8/a16207?text=Xử+lý+Text" },
+                        { name: "Bài 5: Nhận diện giọng nói/âm thanh AI", objective: "Tích hợp tính năng nhận dạng giọng nói AI.", description: "Điều khiển nhân vật bằng lệnh thoại đơn giản.", image: "https://placehold.co/400x200/e9d5ff/6b21a8?text=Nhận+dạng+Speech" },
+                        { name: "Bài 6: Xử lý Dữ liệu Lớn (Lists)", objective: "Học cách quản lý danh sách vật phẩm/đạn dược.", description: "Sử dụng danh sách để lưu trữ nhiều thông tin có cấu trúc.", image: "https://placehold.co/400x200/a5f3fc/0d9488?text=Quản+lý+List" },
+                        { name: "Bài 7: Thiết kế Đồ họa Vector (Tinker)", objective: "Tạo nhân vật và đối tượng chuyên nghiệp hơn.", description: "Sử dụng công cụ vẽ vector tích hợp để thiết kế game.", image: "https://placehold.co/400x200/fce7f3/be185d?text=Thiết+kế+Vector" },
+                        { name: "Bài 8: Xây dựng Màn chơi (Scenes)", objective: "Phân chia trò chơi thành nhiều màn hình.", description: "Tạo các cấp độ khác nhau và chuyển đổi giữa chúng.", image: "https://placehold.co/400x200/fff7ed/ea580c?text=Quản+lý+Scene" },
+                        { name: "Bài 9: Tạo Game chạy đua 2 người", objective: "Ứng dụng kiến thức để tạo game có luật chơi phức tạp hơn.", description: "Lập trình logic cho hai người chơi tương tác trên cùng một màn hình.", image: "https://placehold.co/400x200/d1fae5/047857?text=Game+Multiplayer" },
+                        { name: "Bài 10: Tối ưu hiệu suất Game", objective: "Giúp trò chơi chạy mượt mà hơn.", description: "Tìm và sửa các lỗi làm chậm tốc độ xử lý.", image: "https://placehold.co/400x200/e0f2f1/0f766e?text=Tối+ưu+Code" },
+                        { name: "Bài 11: Debugging và Testing", objective: "Tìm lỗi và kiểm thử chức năng game.", description: "Sử dụng các công cụ gỡ lỗi để đảm bảo game hoạt động chính xác.", image: "https://placehold.co/400x200/fef9c3/a16207?text=Gỡ+lỗi+Debug" },
+                        { name: "Bài 12: Hoàn thiện Game và Chia sẻ", objective: "Xuất bản và giới thiệu sản phẩm.", description: "Hướng dẫn đóng gói game và chia sẻ với bạn bè/cộng đồng.", image: "https://placehold.co/400x200/bfdbfe/1d4ed8?text=Chia+sẻ+Game" }
+                    ]
+                },
+                // Dữ liệu chi tiết cho Level 7 của khóa Lập trình Web & UI/UX (ID 5, Level 7) - 12 bài đầy đủ
+                {
+                    courseId: 5, levelUnit: 7, title: "Level 7: Dự án Web tĩnh",
+                    lessons: [
+                        { name: "Bài 1: Thiết kế wireframe cuối cùng (Figma)", objective: "Hoàn thiện bản nháp giao diện trên Figma.", description: "Sử dụng các công cụ Figma nâng cao để tối ưu UX.", image: "https://placehold.co/400x200/e9d5ff/6b21a8?text=Figma+Wireframe" },
+                        { name: "Bài 2: Cấu trúc hóa HTML5 Semantic", objective: "Sử dụng các thẻ semantic mới nhất.", description: "Xây dựng khung xương cho dự án web với cấu trúc rõ ràng.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=HTML5+Semantic" },
+                        { name: "Bài 3: CSS Grid và Flexbox", objective: "Thiết lập layout đa cột và căn chỉnh linh hoạt.", description: "Sử dụng CSS hiện đại để xây dựng bố cục trang.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=CSS+Layout" },
+                        { name: "Bài 4: Tối ưu Responsive Design (Tailwind)", objective: "Đảm bảo trang web hiển thị tốt trên mọi thiết bị.", description: "Áp dụng các breakpoint của Tailwind để tạo giao diện responsive.", image: "https://placehold.co/400x200/99f6e4/0891b2?text=Responsive+Design" },
+                        { name: "Bài 5: Typography và Color Palette", objective: "Chọn phông chữ và bảng màu phù hợp.", description: "Sử dụng các lớp Tailwind để quản lý văn bản và màu sắc.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Thiết+kế+Font" },
+                        { name: "Bài 6: Xây dựng Header và Navigation", objective: "Tạo thanh điều hướng cố định và menu.", description: "Thiết kế menu dạng hamburger cho thiết bị di động.", image: "https://placehold.co/400x200/fef9c3/a16207?text=Menu+Navigation" },
+                        { name: "Bài 7: Section Hero và Call-to-Action", objective: "Thiết kế phần mở đầu ấn tượng.", description: "Sử dụng hình ảnh, tiêu đề lớn và nút kêu gọi hành động.", image: "https://placehold.co/400x200/fed7aa/c2410c?text=Hero+Section" },
+                        { name: "Bài 8: Cards và Galleries", objective: "Trình bày nội dung dưới dạng thẻ và bộ sưu tập.", description: "Sử dụng Grid để sắp xếp các thẻ sản phẩm hoặc dịch vụ.", image: "https://placehold.co/400x200/bae6fd/0369a1?text=Card+UI" },
+                        { name: "Bài 9: Forms và Inputs", objective: "Thiết kế các biểu mẫu nhập liệu thân thiện.", description: "Áp dụng Tailwind cho kiểu dáng của các trường nhập và nút gửi.", image: "https://placehold.co/400x200/f5d0fe/701a75?text=Form+Design" },
+                        { name: "Bài 10: Tích hợp Icon và Biểu tượng", objective: "Sử dụng các thư viện icon (Font Awesome/Lucide).", description: "Cải thiện tính thẩm mỹ và dễ hiểu bằng các biểu tượng.", image: "https://placehold.co/400x200/a7f3d0/047857?text=Tích+hợp+Icon" },
+                        { name: "Bài 11: Footer và Thông tin liên hệ", objective: "Thiết kế phần chân trang chuyên nghiệp.", description: "Bao gồm bản đồ, liên kết xã hội và thông tin bản quyền.", image: "https://placehold.co/400x200/ffe4e6/be185d?text=Footer+Design" },
+                        { name: "Bài 12: Tối ưu SEO cơ bản", objective: "Hiểu các thẻ meta quan trọng.", description: "Thêm `title`, `description`, và `favicon` cho trang web.", image: "https://placehold.co/400x200/c7f0db/0e7490?text=SEO+cơ+bản" }
+                    ]
+                },
+                // Thêm các bài học mẫu cho khóa AI Cấp 2 (ID 9, Level 5) - 12 bài đầy đủ
+                {
+                    courseId: 9, levelUnit: 5, title: "Level 5: Tạo mô hình Machine Learning",
+                    lessons: [
+                        { name: "Bài 1: Chuẩn bị và làm sạch dữ liệu (Pandas)", objective: "Xử lý dữ liệu thô (missing data, normalization).", description: "Sử dụng Pandas để chuẩn hóa tập dữ liệu và xử lý giá trị thiếu.", image: "https://placehold.co/400x200/fefce8/a16207?text=Xử+lý+Dữ+liệu" },
+                        { name: "Bài 2: Giới thiệu các thuật toán ML cơ bản", objective: "Nắm vững Regression, Classification, Clustering.", description: "Phân biệt khi nào nên sử dụng từng loại thuật toán (ví dụ: Linear Regression).", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Thuật+toán+ML" },
+                        { name: "Bài 3: Phân chia tập dữ liệu", objective: "Hiểu Train/Test Split để đánh giá mô hình.", description: "Sử dụng Scikit-learn để chia dữ liệu thành tập huấn luyện và kiểm thử.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Train+Test+Split" },
+                        { name: "Bài 4: Huấn luyện mô hình đơn giản (Scikit-learn)", objective: "Sử dụng thư viện Scikit-learn.", description: "Tạo mô hình dự đoán đầu tiên và đánh giá độ chính xác cơ bản.", image: "https://placehold.co/400x200/bfdbfe/1d4ed8?text=Huấn+luyện+Model" },
+                        { name: "Bài 5: Các chỉ số đánh giá (Metrics)", objective: "Hiểu Accuracy, Precision, Recall, F1-Score.", description: "Phân tích hiệu suất của mô hình bằng các chỉ số thống kê.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Đánh+giá+Model" },
+                        { name: "Bài 6: Kỹ thuật Cross-Validation", objective: "Đánh giá độ ổn định và tránh Overfitting.", description: "Sử dụng K-Fold Cross-Validation để kiểm tra mô hình.", image: "https://placehold.co/400x200/a7f3d0/047857?text=Cross+Validation" },
+                        { name: "Bài 7: Tinh chỉnh Hyperparameters (Grid Search)", objective: "Tối ưu hóa hiệu suất mô hình.", description: "Sử dụng Grid Search để tìm ra các tham số tốt nhất.", image: "https://placehold.co/400x200/fed7aa/c2410c?text=Hyperparameters" },
+                        { name: "Bài 8: Giới thiệu mô hình Ensemble (Random Forest)", objective: "Sử dụng các mô hình phức tạp hơn.", description: "Làm quen với Random Forest để cải thiện dự đoán.", image: "https://placehold.co/400x200/ffe4e6/be185d?text=Random+Forest" },
+                        { name: "Bài 9: Xử lý dữ liệu văn bản (Vectorization)", objective: "Chuẩn bị dữ liệu phi cấu trúc cho ML.", description: "Sử dụng TF-IDF hoặc Bag-of-Words.", image: "https://placehold.co/400x200/f5d0fe/701a75?text=Vectorization" },
+                        { name: "Bài 10: Xây dựng mô hình phân loại văn bản", objective: "Áp dụng ML cho các ứng dụng NLP.", description: "Tạo mô hình phân loại tin nhắn spam.", image: "https://placehold.co/400x200/c7f0db/0e7490?text=Phân+loại+Text" },
+                        { name: "Bài 11: Trực quan hóa kết quả ML", objective: "Sử dụng Matplotlib/Seaborn.", description: "Vẽ biểu đồ Confusion Matrix để đánh giá mô hình.", image: "https://placehold.co/400x200/d8b4fe/6b21a8?text=Trực+quan+ML" },
+                        { name: "Bài 12: Lưu trữ và Tải mô hình", objective: "Sử dụng Pickle hoặc Joblib để triển khai.", description: "Lưu mô hình đã huấn luyện để sử dụng lại sau này.", image: "https://placehold.co/400x200/a5f3fc/0d9488?text=Lưu+Model" }
+                    ]
+                },
+                // Thêm các bài học mẫu cho Robot Cấp 2 (ID 6, Level 11) - 12 bài đầy đủ
+                {
+                    courseId: 6, levelUnit: 11, title: "Level 11: Ứng dụng IoT với Node-RED, Pico W",
+                    lessons: [
+                        { name: "Bài 1: Cấu hình Pico W và Wi-Fi", objective: "Thiết lập kết nối Internet cho mạch Pico W.", description: "Nạp firmware MicroPython và thiết lập kết nối Wi-Fi.", image: "https://placehold.co/400x200/fee2e2/991b1b?text=Pico+W+Setup" },
+                        { name: "Bài 2: Giới thiệu Node-RED", objective: "Làm quen với môi trường lập trình luồng (flow-based).", description: "Cài đặt và hiểu các node cơ bản của Node-RED.", image: "https://placehold.co/400x200/dbeafe/2563eb?text=Node+RED+Flow" },
+                        { name: "Bài 3: Gửi dữ liệu cảm biến lên Cloud (MQTT)", objective: "Học cách truyền dữ liệu cảm biến qua MQTT/HTTP.", description: "Sử dụng Pico W để đọc nhiệt độ và gửi lên broker MQTT.", image: "https://placehold.co/400x200/fefce8/a16207?text=Gửi+MQTT" },
+                        { name: "Bài 4: Tạo Dashboard cơ bản", objective: "Tạo giao diện điều khiển trên web.", description: "Sử dụng Node-RED Dashboard để hiển thị giá trị cảm biến.", image: "https://placehold.co/400x200/a7f3d0/047857?text=Dashboard+IoT" },
+                        { name: "Bài 5: Điều khiển thiết bị từ xa", objective: "Sử dụng nút bấm trên Dashboard để điều khiển Pico W.", description: "Gửi lệnh qua MQTT từ Dashboard để bật/tắt đèn LED trên Pico W.", image: "https://placehold.co/400x200/fce7f3/be185d?text=Điều+khiển+Remote" },
+                        { name: "Bài 6: Xử lý logic trên Node-RED", objective: "Sử dụng node Function để viết JavaScript.", description: "Tạo các quy tắc tự động hóa đơn giản (ví dụ: nhiệt độ cao tự bật quạt).", image: "https://placehold.co/400x200/f9fafb/374151?text=Node+Function" },
+                        { name: "Bài 7: Tích hợp API thời tiết", objective: "Lấy dữ liệu từ các dịch vụ web bên ngoài.", description: "Sử dụng node HTTP Request để lấy thông tin thời tiết địa phương.", image: "https://placehold.co/400x200/e9d5ff/6b21a8?text=API+Thời+tiết" },
+                        { name: "Bài 8: Gửi thông báo qua Email/Telegram", objective: "Phát triển tính năng cảnh báo.", description: "Cấu hình Node-RED để gửi email cảnh báo khi cảm biến có giá trị bất thường.", image: "https://placehold.co/400x200/a5f3fc/0d9488?text=Gửi+Notification" },
+                        { name: "Bài 9: Lưu trữ dữ liệu vào Database", objective: "Sử dụng Node-RED để kết nối với SQLite/MongoDB.", description: "Lưu trữ dữ liệu cảm biến liên tục vào cơ sở dữ liệu.", image: "https://placehold.co/400x200/fed7aa/c2410c?text=Lưu+Database" },
+                        { name: "Bài 10: Xây dựng Hệ thống giám sát", objective: "Tổng hợp các kiến thức IoT đã học.", description: "Tạo một giao diện Dashboard hoàn chỉnh để giám sát nhà thông minh.", image: "https://placehold.co/400x200/fef9c3/a16207?text=Hệ+thống+giám+sát" },
+                        { name: "Bài 11: Tối ưu bảo mật IoT cơ bản", objective: "Hiểu các rủi ro bảo mật trong IoT.", description: "Sử dụng mật khẩu và kênh truyền an toàn (TLS/SSL).", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Bảo+mật+IoT" },
+                        { name: "Bài 12: Dự án IoT hoàn chỉnh", objective: "Triển khai hệ thống tự động hóa thực tế.", description: "Hoàn thiện một dự án tự động hóa cá nhân sử dụng Pico W và Node-RED.", image: "https://placehold.co/400x200/e0f2f1/0f766e?text=Dự+án+IoT+cuối+khóa" }
+                    ]
+                },
+                // Lưu ý: Các Level không có dữ liệu chi tiết sẽ hiển thị thông báo "Nội dung đang được cập nhật".
+            ];
+
+            const coursesData = [
+                {
+                    id: 1,
+                    subject: "Lập trình",
+                    title: "Mầm non công nghệ",
+                    ageGroup: "5-7",
+                    modules: 8,
+                    colorClass: "color-group-1",
+                    timelineHeaderClass: "timeline-header-1",
+                    curriculum: [
+                        { unit: 1, name: "Khám phá thế giới" }, { unit: 2, name: "Sáng tạo chuyển động" }, { unit: 3, name: "Thiết kế Game" }, { unit: 4, name: "Tư duy logic" },
+                        { unit: 5, name: "Kitten Jr" }, { unit: 6, name: "Kitten Jr" }, { unit: 7, name: "Maker Empire" }, { unit: 8, name: "Maker Empire" }
+                    ],
+                    ageMarkers: [
+                        { range: "5-6 tuổi", start: 1, end: 4 },
+                        { range: "6-7 tuổi", start: 5, end: 8 }
+                    ]
+                },
+                {
+                    id: 2,
+                    subject: "Lập trình",
+                    title: "Bé làm Game (Tổng quan)",
+                    ageGroup: "7-11",
+                    modules: 12,
+                    colorClass: "color-group-2",
+                    timelineHeaderClass: "timeline-header-2",
+                    curriculum: [
+                        { unit: 1, name: "CodeKitten, AI" }, { unit: 2, name: "CodeKitten, AI" }, { unit: 3, name: "CodeKitten, AI" },
+                        { unit: 4, name: "Tinker, AI" }, { unit: 5, name: "Tinker, AI" }, { unit: 6, name: "Minmi World" },
+                        { unit: 7, name: "Minmi World" }, { unit: 8, name: "Make Code, Micro/Bit" }, { unit: 9, name: "Make Code, Micro/Bit" },
+                        { unit: 10, name: "PictoBlox, Micro/Bit" }, { unit: 11, name: "PictoBlox, Python, AI" }, { unit: 12, name: "Tổng kết" }
+                    ],
+                    ageMarkers: [
+                        { range: "7-8 tuổi", start: 1, end: 4 },
+                        { range: "8-9 tuổi", start: 5, end: 8 },
+                        { range: "9-11 tuổi", start: 9, end: 12 }
+                    ]
+                },
+                {
+                    id: 3,
+                    subject: "Robot",
+                    title: "Khám phá Robotics",
+                    ageGroup: "7-11",
+                    modules: 12,
+                    colorClass: "color-group-3",
+                    timelineHeaderClass: "timeline-header-3",
+                    curriculum: [
+                        { unit: 1, name: "Wedo/ Spike Essential" }, { unit: 2, name: "Wedo/ Spike Essential" }, { unit: 3, name: "Wedo/ Spike Essential" },
+                        { unit: 4, name: "Wedo/ Spike Essential" }, { unit: 5, name: "Mindstorms/ Spike Prime" }, { unit: 6, name: "Mindstorms/ Spike Prime" },
+                        { unit: 7, name: "Mindstorms/ Spike Prime" }, { unit: 8, name: "Mindstorms/ Spike Prime" }, { unit: 9, name: "Make Code, Micro/Bit" },
+                        { unit: 10, name: "Make Code, Micro/Bit" }, { unit: 11, "name": "PictoBlox, Micro/Bit" }, { unit: 12, name: "PictoBlox, Python, AI" }
+                    ],
+                    ageMarkers: [
+                        { range: "7-8 tuổi", start: 1, end: 4 },
+                        { range: "8-9 tuổi", start: 5, end: 8 },
+                        { range: "9-11 tuổi", start: 9, end: 12 }
+                    ]
+                },
+                {
+                    id: 4,
+                    subject: "3D",
+                    title: "Digi Art: Stem Art",
+                    ageGroup: "7-11",
+                    modules: 12,
+                    colorClass: "color-group-4",
+                    timelineHeaderClass: "timeline-header-4",
+                    curriculum: [
+                        { unit: 1, name: "SOLIDWORKS" }, { unit: 2, name: "SOLIDWORKS" }, { unit: 3, name: "Maker Empire" },
+                        { unit: 4, name: "Maker Empire" }, { unit: 5, name: "TinkerCAD" }, { unit: 6, name: "TinkerCAD" },
+                        { unit: 7, name: "TinkerCAD/ Assembler" }, { unit: 8, name: "Assembler EDU" }, { unit: 9, name: "Deligtex (CoSpaces)" },
+                        { unit: 10, name: "Deligtex (CoSpaces)" }, { unit: 11, name: "Deligtex (CoSpaces)" }, { unit: 12, name: "Dự án VR/AR" }
+                    ],
+                    ageMarkers: [
+                        { range: "7-8 tuổi", start: 1, end: 4 },
+                        { range: "8-9 tuổi", start: 5, end: 8 },
+                        { range: "9-11 tuổi", start: 9, end: 12 }
+                    ]
+                },
+                /* KHÓA LẬP TRÌNH CẤP 2 - CHIA NHỎ */
+                {
+                    id: 5,
+                    subject: "Lập trình Web",
+                    title: "Lập trình Web & UI/UX",
+                    ageGroup: "12-15",
+                    modules: 8,
+                    colorClass: "color-group-5",
+                    timelineHeaderClass: "timeline-header-5",
+                    curriculum: [
+                        { unit: 1, name: "Figma (Thiết kế)" }, { unit: 2, name: "HTML Cơ bản" }, { unit: 3, name: "CSS & Responsive Design" },
+                        { unit: 4, name: "Bootstrap / Tailwind" }, { unit: 5, name: "Javascript DOM" }, { unit: 6, name: "Python Web (Giới thiệu)" },
+                        { unit: 7, name: "Dự án Web tĩnh" }, { unit: 8, name: "Dự án Web tương tác" }
+                    ],
+                    ageMarkers: [
+                        { range: "12-15 tuổi", start: 1, end: 8 }
+                    ]
+                },
+                {
+                    id: 10,
+                    subject: "Lập trình Game",
+                    title: "Lập trình Game (2D/3D)",
+                    ageGroup: "12-15",
+                    modules: 8,
+                    colorClass: "color-group-5",
+                    timelineHeaderClass: "timeline-header-5",
+                    curriculum: [
+                        { unit: 1, name: "Roblox Studio & Lua I" }, { unit: 2, name: "Roblox Studio & Lua II" }, { unit: 3, name: "Roblox Studio & Lua III" },
+                        { unit: 4, name: "Python cho Game (Pygame)" }, { unit: 5, name: "Pygame: Logic Game" }, { unit: 6, name: "Pygame: Đồ họa" },
+                        { unit: 7, name: "Dự án Game 2D" }, { unit: 8, name: "Khái niệm Game 3D (Giới thiệu)" }
+                    ],
+                    ageMarkers: [
+                        { range: "12-15 tuổi", start: 1, end: 8 }
+                    ]
+                },
+                {
+                    id: 11,
+                    subject: "Lập trình App",
+                    title: "Lập trình Ứng dụng & Dữ liệu",
+                    ageGroup: "12-15",
+                    modules: 8,
+                    colorClass: "color-group-5",
+                    timelineHeaderClass: "timeline-header-5",
+                    curriculum: [
+                        { unit: 1, name: "Python Nâng cao (Cấu trúc)" }, { unit: 2, name: "Python/ Tinker & SQLITE" }, { unit: 3, name: "Thiết kế UI/UX (Figma)" },
+                        { unit: 4, name: "App Inventor Cơ bản" }, { unit: 5, name: "Tạo App Android/iOS cơ bản" }, { unit: 6, name: "Tương tác Database App" },
+                        { unit: 7, name: "Xử lý dữ liệu trong App" }, { unit: 8, name: "Dự án App hoàn chỉnh" }
+                    ],
+                    ageMarkers: [
+                        { range: "12-15 tuổi", start: 1, end: 8 }
+                    ]
+                },
+                /* CÁC KHÓA CÒN LẠI */
+                {
+                    id: 6,
+                    subject: "Robot",
+                    title: "Thế giới vạn vật thông minh",
+                    ageGroup: "12-15",
+                    modules: 12,
+                    colorClass: "color-group-6",
+                    timelineHeaderClass: "timeline-header-6",
+                    curriculum: [
+                        { unit: 1, name: "Arduino/ mBlock" }, { unit: 2, name: "Arduino/ mBlock" }, { unit: 3, name: "Arduino/ mBlock" },
+                        { unit: 4, name: "Arduino C" }, { unit: 5, name: "Arduino Wemos, C" }, { unit: 6, name: "Arduino Wemos, C" },
+                        { unit: 7, name: "Arduino Wemos, App Inventor" }, { unit: 8, name: "Arduino Wemos, App Inventor" }, { unit: 9, name: "Arduino Wemos, App Inventor" },
+                        { unit: 10, name: "Arduino Cloud" }, { unit: 11, name: "Node-RED, Pico W" }, { unit: 12, name: "Node-RED, Pico W" }
+                    ],
+                    ageMarkers: [
+                        { range: "12-15 tuổi", start: 1, end: 12 }
+                    ]
+                },
+                {
+                    id: 7,
+                    subject: "3D",
+                    title: "Digi Style: Multimedia",
+                    ageGroup: "12-15",
+                    modules: 12,
+                    colorClass: "color-group-8",
+                    timelineHeaderClass: "timeline-header-8",
+                    curriculum: [
+                        { unit: 1, name: "Canva" }, { unit: 2, name: "Canva" }, { unit: 3, name: "Canva" },
+                        { unit: 4, name: "Canva" }, { unit: 5, name: "Inkscape" }, { unit: 6, name: "Inkscape" },
+                        { unit: 7, name: "Inkscape" }, { unit: 8, name: "Inkscape" }, { unit: 9, name: "Gimp" },
+                        { unit: 10, name: "Gimp" }, { unit: 11, name: "Gimp" }, { unit: 12, name: "Gimp" }
+                    ],
+                    ageMarkers: [
+                        { range: "12-15 tuổi", start: 1, end: 12 }
+                    ]
+                },
+                {
+                    id: 8,
+                    subject: "AI",
+                    title: "AI & Học máy cơ bản",
+                    ageGroup: "7-11",
+                    modules: 8,
+                    colorClass: "color-group-7",
+                    timelineHeaderClass: "timeline-header-7",
+                    curriculum: [
+                        { unit: 1, name: "PictoBlox AI" }, { unit: 2, name: "PictoBlox Vision" }, { unit: 3, name: "CodeKitten Machine Learning" },
+                        { unit: 4, name: "Tinker AI Games" }, { unit: 5, name: "Robot Tương tác AI (Micro/Bit)" }, { unit: 6, name: "Robot Tương tác AI (Micro/Bit)" },
+                        { unit: 7, name: "Phân loại đối tượng đơn giản" }, { unit: 8, name: "Dự án AI mini" }
+                    ],
+                    ageMarkers: [
+                        { range: "7-9 tuổi", start: 1, end: 4 },
+                        { range: "9-11 tuổi", start: 5, end: 8 }
+                    ]
+                },
+                {
+                    id: 9,
+                    subject: "AI",
+                    title: "Phát triển Ứng dụng AI",
+                    ageGroup: "12-15",
+                    modules: 12,
+                    colorClass: "color-group-7",
+                    timelineHeaderClass: "timeline-header-7",
+                    curriculum: [
+                        { unit: 1, name: "Giới thiệu Python & Pandas" }, { unit: 2, name: "Phân tích dữ liệu cơ bản" }, { unit: 3, name: "TensorFlow Lite & Mobile" },
+                        { unit: 4, name: "Xử lý Ngôn ngữ Tự nhiên (NLP)" }, { unit: 5, name: "Tạo mô hình Machine Learning" }, { unit: 6, name: "Tạo mô hình Machine Learning" },
+                        { unit: 7, name: "Ứng dụng AI với Raspberry Pi" }, { unit: 8, name: "Ứng dụng AI với Raspberry Pi" }, { unit: 9, name: "Tạo Chatbot Python" },
+                        { unit: 10, name: "Mạng nơ-ron cơ bản" }, { unit: 11, name: "Dự án nhận dạng hình ảnh" }, { unit: 12, name: "Dự án hoàn chỉnh" }
+                    ],
+                    ageMarkers: [
+                        { range: "12-15 tuổi", start: 1, end: 12 }
+                    ]
+                }
+            ];
+
+            const coursesContainer = document.getElementById('courses-container');
+            const detailModal = document.getElementById('detailModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            let activeFilters = { age: 'all', subject: 'all' };
+
+            // Hàm mở Modal
+            window.openModal = function(courseId, levelUnit, levelName) {
+                const course = coursesData.find(c => c.id === courseId);
+                const levelDetail = lessonData.find(d => d.courseId === courseId && d.levelUnit === levelUnit);
+                
+                modalTitle.textContent = `${course.title} - Level ${levelUnit}: ${levelName}`;
+                
+                let contentHTML = '';
+
+                if (levelDetail) {
+                    contentHTML = `<div class="space-y-6">`;
+                    levelDetail.lessons.forEach((lesson, index) => {
+                        contentHTML += `
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
+                                <div class="col-span-1">
+                                    <img src="${lesson.image}" alt="Hình minh họa bài học" class="w-full rounded-md shadow-sm h-auto object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x200/cccccc/333333?text=Hình+chủ+đề';">
+                                </div>
+                                <div class="col-span-3">
+                                    <h4 class="text-lg font-bold text-slate-900 mb-1">Bài ${index + 1}: ${lesson.name}</h4>
+                                    <p class="text-sm font-semibold text-blue-600">Mục tiêu: ${lesson.objective}</p>
+                                    <p class="text-sm text-slate-600 mt-1">${lesson.description}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    contentHTML += `</div>`;
+                } else {
+                    contentHTML = `
+                        <div class="text-center p-10 bg-yellow-50 rounded-lg">
+                            <h4 class="text-xl font-semibold text-yellow-700">Nội dung Level ${levelUnit} đang được cập nhật</h4>
+                            <p class="text-slate-500 mt-2">Vui lòng kiểm tra lại sau để xem chi tiết 12 bài học của Level này.</p>
+                        </div>
+                    `;
+                }
+
+                modalContent.innerHTML = contentHTML;
+                detailModal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden'); 
+            }
+
+            // Hàm đóng Modal
+            window.closeModal = function(event) {
+                if (event && event.target !== detailModal) return;
+                detailModal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+
+            function createTimeline(course) {
+                let curriculumHTML = '';
+                course.curriculum.forEach(step => {
+                    // Thêm sự kiện onclick vào mỗi ô Level
+                    const levelNameEncoded = encodeURIComponent(step.name);
+                    curriculumHTML += `
+                        <div class="timeline-step" onclick="openModal(${course.id}, ${step.unit}, '${step.name}')">
+                            <span class="text-xs font-bold text-slate-400">Level ${step.unit}</span>
+                            <p class="text-sm font-semibold text-slate-700 mt-1">${step.name || '&nbsp;'}</p>
+                        </div>
+                    `;
+                });
+
+                let ageMarkersHTML = '';
+                course.ageMarkers.forEach(marker => {
+                    const gridSpan = `grid-column: ${marker.start} / ${marker.end + 1}`;
+                    ageMarkersHTML += `<div class="age-marker ${course.timelineHeaderClass}" style="${gridSpan}">${marker.range}</div>`;
+                });
+
+                return `
+                    <div class="mt-4">
+                        <div class="grid" style="grid-template-columns: repeat(${course.modules}, minmax(100px, 1fr));">
+                            ${ageMarkersHTML}
+                        </div>
+                        <div class="timeline-container relative flex w-full mt-2 bg-white rounded-lg shadow-inner">
+                            ${curriculumHTML}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function renderCourses() {
+                coursesContainer.innerHTML = '';
+                coursesData.forEach(course => {
+                    const timelineHTML = createTimeline(course);
+                    const card = `
+                        <div class="course-card bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300" 
+                             data-age-group="${course.ageGroup}" 
+                             data-subject="${course.subject}">
+                            <div class="p-6 ${course.colorClass} flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-2xl font-bold text-slate-800">${course.title}</h3>
+                                    <div class="flex items-center space-x-2 mt-2">
+                                        <span class="text-sm font-semibold bg-white/70 px-3 py-1 rounded-full">${course.subject}</span>
+                                        <span class="text-sm font-semibold bg-white/70 px-3 py-1 rounded-full">${course.ageGroup} tuổi</span>
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0 text-right">
+                                    <span class="text-4xl font-extrabold text-slate-900 leading-none">${course.modules}</span>
+                                    <span class="block text-sm font-semibold text-slate-600 mt-[-5px]">Level</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <h4 class="text-md font-semibold text-blue-700 mb-2">Lộ trình học:</h4>
+                                ${timelineHTML}
+                            </div>
+                        </div>
+                    `;
+                    coursesContainer.innerHTML += card;
+                });
+            }
+
+            function filterCourses() {
+                const courseCards = document.querySelectorAll('.course-card');
+                const genericProgrammingSubjects = ["Lập trình", "Lập trình Web", "Lập trình Game", "Lập trình App"];
+
+                courseCards.forEach(card => {
+                    const ageMatch = activeFilters.age === 'all' || card.dataset.ageGroup === activeFilters.age;
+                    const cardSubject = card.dataset.subject;
+
+                    let subjectMatch = false;
+                    
+                    if (activeFilters.subject === 'all') {
+                        subjectMatch = true;
+                    } else if (activeFilters.subject === 'Lập trình') {
+                        // Nút "Lập trình (Tổng hợp)" sẽ hiển thị tất cả các khóa Lập trình cụ thể.
+                        subjectMatch = genericProgrammingSubjects.includes(cardSubject);
+                    } else if (activeFilters.subject === cardSubject) {
+                        // Lọc theo khóa cụ thể (Robot, AI, Lập trình Web,...)
+                        subjectMatch = true;
+                    } else {
+                        subjectMatch = false;
+                    }
+                    
+                    if (ageMatch && subjectMatch) {
+                        card.style.display = 'block';
+                        card.style.opacity = 1;
+                        card.style.transform = 'scale(1)';
+                    } else {
+                        card.style.opacity = 0;
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            }
+
+            function setupFilters() {
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const type = button.dataset.filterType;
+                        const value = button.dataset.filterValue;
+
+                        activeFilters[type] = value;
+
+                        document.querySelectorAll(`.filter-btn[data-filter-type="${type}"]`).forEach(btn => {
+                            btn.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-md');
+                            btn.classList.add('bg-white', 'text-slate-700', 'shadow');
+                        });
+                        
+                        button.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-md');
+                        button.classList.remove('bg-white', 'text-slate-700', 'shadow');
+                        
+                        filterCourses();
+                    });
+                });
+            }
+
+            function getTechCounts() {
+                const techCounts = {};
+                const keywords = [
+                    'AI', 'Python', 'Micro/Bit', 'Roblox', 'Lua', 'Spike', 'Mindstorms',
+                    'Arduino', 'Node-RED', 'HTML/CSS', 'Javascript', 'Figma', 'TinkerCAD',
+                    'Canva', 'Inkscape', 'Gimp', 'SOLIDWORKS', 'CoSpaces', 'Maker Empire', 'TensorFlow', 'Bootstrap', 'Pygame'
+                ];
+                
+                coursesData.forEach(course => {
+                    course.curriculum.forEach(step => {
+                        keywords.forEach(tech => {
+                            if (step.name.includes(tech)) {
+                                techCounts[tech] = (techCounts[tech] || 0) + 1;
+                            }
+                        });
+                    });
+                    
+                });
+                return techCounts;
+            }
+
+            function renderTechChart() {
+                const techData = getTechCounts();
+                const labels = Object.keys(techData);
+                const data = Object.values(techData);
+
+                const ctx = document.getElementById('techChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Số học phần',
+                            data: data,
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                enabled: true,
+                                backgroundColor: '#0f172a',
+                                titleFont: { size: 14, weight: 'bold' },
+                                bodyFont: { size: 12 },
+                                padding: 10,
+                                cornerRadius: 4
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: '#e2e8f0'
+                                },
+                                ticks: {
+                                    color: '#475569'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#1e293b',
+                                    font: {
+                                        weight: '600'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            renderCourses();
+            setupFilters();
+            renderTechChart();
+        });
+    </script>
+</body>
+</html>
