@@ -263,6 +263,41 @@
                 // Lưu ý: Các Level không có dữ liệu chi tiết sẽ hiển thị thông báo "Nội dung đang được cập nhật".
             ];
 
+            // Hàm để lấy trạng thái hoàn thành từ localStorage
+            function getCompletedState() {
+                const saved = localStorage.getItem('completedCourses');
+                return saved ? JSON.parse(saved) : {};
+            }
+
+            // Hàm để lưu trạng thái hoàn thành vào localStorage
+            function saveCompletedState(state) {
+                localStorage.setItem('completedCourses', JSON.stringify(state));
+            }
+
+            // Định nghĩa hàm toggle ở phạm vi window để có thể gọi từ onclick
+            window.toggleCourseComplete = function(courseId, event) {
+                if (event) {
+                    event.stopPropagation();
+                }
+                const completedState = getCompletedState();
+                completedState[courseId] = !completedState[courseId];
+                saveCompletedState(completedState);
+                
+                // Cập nhật UI
+                const card = document.querySelector(`[data-course-id="${courseId}"]`);
+                if (card) {
+                    const icon = card.querySelector('.complete-icon');
+                    
+                    if (completedState[courseId]) {
+                        icon.classList.remove('text-slate-300');
+                        icon.classList.add('text-green-500');
+                    } else {
+                        icon.classList.add('text-slate-300');
+                        icon.classList.remove('text-green-500');
+                    }
+                }
+            }
+
             const coursesData = [
                 {
                     id: 1,
@@ -273,8 +308,8 @@
                     colorClass: "color-group-1",
                     timelineHeaderClass: "timeline-header-1",
                     curriculum: [
-                        { unit: 1, name: "Khám phá thế giới" }, { unit: 2, name: "Sáng tạo chuyển động" }, { unit: 3, name: "Thiết kế Game" }, { unit: 4, name: "Tư duy logic" },
-                        { unit: 5, name: "Kitten Jr" }, { unit: 6, name: "Kitten Jr" }, { unit: 7, name: "Maker Empire" }, { unit: 8, name: "Maker Empire" }
+                        { unit: 1, name: "ScratchJr" }, { unit: 2, name: "ScratchJr" }, { unit: 3, name: "Maker Empire" }, { unit: 4, name: "Maker Empire" },
+                        { unit: 5, name: "LEGO Education DUPLO STEAM Park" }, { unit: 6, name: "LEGO Education DUPLO Coding Express" }, { unit: 7, name: "Máy tính cơ bản" }, { unit: 8, name: "Máy tính cơ bản" }
                     ],
                     ageMarkers: [
                         { range: "5-6 tuổi", start: 1, end: 4 },
@@ -290,10 +325,10 @@
                     colorClass: "color-group-2",
                     timelineHeaderClass: "timeline-header-2",
                     curriculum: [
-                        { unit: 1, name: "CodeKitten, AI" }, { unit: 2, name: "CodeKitten, AI" }, { unit: 3, name: "CodeKitten, AI" },
-                        { unit: 4, name: "Tinker, AI" }, { unit: 5, name: "Tinker, AI" }, { unit: 6, name: "Minmi World" },
-                        { unit: 7, name: "Minmi World" }, { unit: 8, name: "Make Code, Micro/Bit" }, { unit: 9, name: "Make Code, Micro/Bit" },
-                        { unit: 10, name: "PictoBlox, Micro/Bit" }, { unit: 11, name: "PictoBlox, Python, AI" }, { unit: 12, name: "Tổng kết" }
+                        { unit: 1, name: "Scratch" }, { unit: 2, name: "Scratch" }, { unit: 3, name: "Scratch, AI" },
+                        { unit: 4, name: "Scratch, AI" }, { unit: 5, name: "Tynker" }, { unit: 6, name: "Tynker, AI" },
+                        { unit: 7, name: "Kodu Game Lab" }, { unit: 8, name: "Kodu Game Lab" }, { unit: 9, name: "Minecraft Education" },
+                        { unit: 10, name: "Minecraft Education" }, { unit: 11, name: "Delightex Edu" }, { unit: 12, name: "Delightex Edu" }
                     ],
                     ageMarkers: [
                         { range: "7-8 tuổi", start: 1, end: 4 },
@@ -310,8 +345,8 @@
                     colorClass: "color-group-3",
                     timelineHeaderClass: "timeline-header-3",
                     curriculum: [
-                        { unit: 1, name: "Wedo/ Spike Essential" }, { unit: 2, name: "Wedo/ Spike Essential" }, { unit: 3, name: "Wedo/ Spike Essential" },
-                        { unit: 4, name: "Wedo/ Spike Essential" }, { unit: 5, name: "Mindstorms/ Spike Prime" }, { unit: 6, name: "Mindstorms/ Spike Prime" },
+                        { unit: 1, name: "Lego Wedo" }, { unit: 2, name: "Lego Wedo" }, { unit: 3, name: "Lego Wedo" },
+                        { unit: 4, name: "Wedo,Scratch" }, { unit: 5, name: "Mindstorms/ Spike Prime" }, { unit: 6, name: "Mindstorms/ Spike Prime" },
                         { unit: 7, name: "Mindstorms/ Spike Prime" }, { unit: 8, name: "Mindstorms/ Spike Prime" }, { unit: 9, name: "Make Code, Micro/Bit" },
                         { unit: 10, name: "Make Code, Micro/Bit" }, { unit: 11, "name": "PictoBlox, Micro/Bit" }, { unit: 12, name: "PictoBlox, Python, AI" }
                     ],
@@ -351,9 +386,9 @@
                     colorClass: "color-group-5",
                     timelineHeaderClass: "timeline-header-5",
                     curriculum: [
-                        { unit: 1, name: "Figma (Thiết kế)" }, { unit: 2, name: "HTML Cơ bản" }, { unit: 3, name: "CSS & Responsive Design" },
-                        { unit: 4, name: "Bootstrap / Tailwind" }, { unit: 5, name: "Javascript DOM" }, { unit: 6, name: "Python Web (Giới thiệu)" },
-                        { unit: 7, name: "Dự án Web tĩnh" }, { unit: 8, name: "Dự án Web tương tác" }
+                        { unit: 1, name: "Figma" }, { unit: 2, name: "HTML&CSS Cơ Bản" }, { unit: 3, name: "HTML&CSS Nâng Cao" },
+                        { unit: 4, name: "Bootstrap / Tailwind" }, { unit: 5, name: "Ngôn Ngữ Javascript" }, { unit: 6, name: "Javascript DOM" },
+                        { unit: 7, name: "Javascript DOM" }, { unit: 8, name: "Web Interactive" }
                     ],
                     ageMarkers: [
                         { range: "12-15 tuổi", start: 1, end: 8 }
@@ -368,9 +403,9 @@
                     colorClass: "color-group-5",
                     timelineHeaderClass: "timeline-header-5",
                     curriculum: [
-                        { unit: 1, name: "Roblox Studio & Lua I" }, { unit: 2, name: "Roblox Studio & Lua II" }, { unit: 3, name: "Roblox Studio & Lua III" },
-                        { unit: 4, name: "Python cho Game (Pygame)" }, { unit: 5, name: "Pygame: Logic Game" }, { unit: 6, name: "Pygame: Đồ họa" },
-                        { unit: 7, name: "Dự án Game 2D" }, { unit: 8, name: "Khái niệm Game 3D (Giới thiệu)" }
+                        { unit: 1, name: "Nhập Môn Lua" }, { unit: 2, name: "Roblox Studio & Lua" }, { unit: 3, name: "Roblox Studio & Lua" },
+                        { unit: 4, name: "Roblox Studio & Lua" }, { unit: 5, name: "Roblox Studio & Lua" }, { unit: 6, name: "Roblox Studio & Lua" },
+                        { unit: 7, name: "Unity" }, { unit: 8, name: "Unity" }
                     ],
                     ageMarkers: [
                         { range: "12-15 tuổi", start: 1, end: 8 }
@@ -439,9 +474,9 @@
                     colorClass: "color-group-7",
                     timelineHeaderClass: "timeline-header-7",
                     curriculum: [
-                        { unit: 1, name: "PictoBlox AI" }, { unit: 2, name: "PictoBlox Vision" }, { unit: 3, name: "CodeKitten Machine Learning" },
-                        { unit: 4, name: "Tinker AI Games" }, { unit: 5, name: "Robot Tương tác AI (Micro/Bit)" }, { unit: 6, name: "Robot Tương tác AI (Micro/Bit)" },
-                        { unit: 7, name: "Phân loại đối tượng đơn giản" }, { unit: 8, name: "Dự án AI mini" }
+                        { unit: 1, name: "PictoBlox" }, { unit: 2, name: "PictoBlox AI" }, { unit: 3, name: "PictoBlox AI" },
+                        { unit: 4, name: "PictoBlox Vision" }, { unit: 5, name: "Tynker AI" }, { unit: 6, name: "Chatbox AI" },
+                        { unit: 7, name: "Robot Tương tác AI (Micro/Bit)" }, { unit: 8, name: "Robot Tương tác AI (Micro/Bit)" }
                     ],
                     ageMarkers: [
                         { range: "7-9 tuổi", start: 1, end: 4 },
@@ -556,11 +591,14 @@
                 coursesContainer.innerHTML = '';
                 coursesData.forEach(course => {
                     const timelineHTML = createTimeline(course);
+                    const completedState = getCompletedState();
+                    const isCompleted = completedState[course.id] || false;
                     const card = `
                         <div class="course-card bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300" 
                              data-age-group="${course.ageGroup}" 
-                             data-subject="${course.subject}">
-                            <div class="p-6 ${course.colorClass} flex justify-between items-start">
+                             data-subject="${course.subject}"
+                             data-course-id="${course.id}">
+                            <div class="p-6 ${course.colorClass} flex justify-between items-start relative">
                                 <div>
                                     <h3 class="text-2xl font-bold text-slate-800">${course.title}</h3>
                                     <div class="flex items-center space-x-2 mt-2">
@@ -569,6 +607,19 @@
                                     </div>
                                 </div>
                                 <div class="flex-shrink-0 text-right">
+                                    <div class="flex items-center justify-end mb-2">
+                                        <button type="button"
+                                                onclick="window.toggleCourseComplete(${course.id}, event);" 
+                                                class="complete-button p-2 hover:bg-white/10 rounded-full transition-colors cursor-pointer">
+                                            <svg class="complete-icon w-6 h-6 ${isCompleted ? 'text-green-500' : 'text-slate-300'}" 
+                                                 fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" 
+                                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" 
+                                                      clip-rule="evenodd">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                    </div>
                                     <span class="text-4xl font-extrabold text-slate-900 leading-none">${course.modules}</span>
                                     <span class="block text-sm font-semibold text-slate-600 mt-[-5px]">Level</span>
                                 </div>
