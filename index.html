@@ -555,22 +555,243 @@
                         { name: "Bài 12: Tối ưu SEO cơ bản", objective: "Hiểu các thẻ meta quan trọng.", description: "Thêm `title`, `description`, và `favicon` cho trang web.", image: "https://placehold.co/400x200/c7f0db/0e7490?text=SEO+cơ+bản" }
                     ]
                 },
-                // Thêm các bài học mẫu cho khóa AI Cấp 2 (ID 9, Level 5) - 12 bài đầy đủ
+                // Dữ liệu cho khóa "Phát triển Ứng dụng AI" (ID 9) - cập nhật theo bảng LV1..LV12
                 {
-                    courseId: 9, levelUnit: 5, title: "Level 5: Tạo mô hình Machine Learning",
+                    courseId: 9, levelUnit: 1, title: "Level 1: Python & Tư duy AI",
+                    levelObjective: "Giúp học sinh làm quen với ngôn ngữ lập trình Python – nền tảng của trí tuệ nhân tạo; hiểu vai trò Python trong AI; nắm vững cú pháp cơ bản (biến, kiểu dữ liệu, điều kiện, vòng lặp, hàm, danh sách, dictionary); sử dụng được các thư viện nền tảng (math, random, numpy, matplotlib) để xử lý và trực quan hóa dữ liệu; phát triển tư duy logic, thuật toán, giải quyết vấn đề và sáng tạo qua các mini project như chatbot hoặc trò chơi; hình thành thái độ tích cực, hứng thú với công nghệ và tư duy AI.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
                     lessons: [
-                        { name: "Bài 1: Chuẩn bị và làm sạch dữ liệu (Pandas)", objective: "Xử lý dữ liệu thô (missing data, normalization).", description: "Sử dụng Pandas để chuẩn hóa tập dữ liệu và xử lý giá trị thiếu.", image: "https://placehold.co/400x200/fefce8/a16207?text=Xử+lý+Dữ+liệu" },
-                        { name: "Bài 2: Giới thiệu các thuật toán ML cơ bản", objective: "Nắm vững Regression, Classification, Clustering.", description: "Phân biệt khi nào nên sử dụng từng loại thuật toán (ví dụ: Linear Regression).", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Thuật+toán+ML" },
-                        { name: "Bài 3: Phân chia tập dữ liệu", objective: "Hiểu Train/Test Split để đánh giá mô hình.", description: "Sử dụng Scikit-learn để chia dữ liệu thành tập huấn luyện và kiểm thử.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Train+Test+Split" },
-                        { name: "Bài 4: Huấn luyện mô hình đơn giản (Scikit-learn)", objective: "Sử dụng thư viện Scikit-learn.", description: "Tạo mô hình dự đoán đầu tiên và đánh giá độ chính xác cơ bản.", image: "https://placehold.co/400x200/bfdbfe/1d4ed8?text=Huấn+luyện+Model" },
-                        { name: "Bài 5: Các chỉ số đánh giá (Metrics)", objective: "Hiểu Accuracy, Precision, Recall, F1-Score.", description: "Phân tích hiệu suất của mô hình bằng các chỉ số thống kê.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Đánh+giá+Model" },
-                        { name: "Bài 6: Kỹ thuật Cross-Validation", objective: "Đánh giá độ ổn định và tránh Overfitting.", description: "Sử dụng K-Fold Cross-Validation để kiểm tra mô hình.", image: "https://placehold.co/400x200/a7f3d0/047857?text=Cross+Validation" },
-                        { name: "Bài 7: Tinh chỉnh Hyperparameters (Grid Search)", objective: "Tối ưu hóa hiệu suất mô hình.", description: "Sử dụng Grid Search để tìm ra các tham số tốt nhất.", image: "https://placehold.co/400x200/fed7aa/c2410c?text=Hyperparameters" },
-                        { name: "Bài 8: Giới thiệu mô hình Ensemble (Random Forest)", objective: "Sử dụng các mô hình phức tạp hơn.", description: "Làm quen với Random Forest để cải thiện dự đoán.", image: "https://placehold.co/400x200/ffe4e6/be185d?text=Random+Forest" },
-                        { name: "Bài 9: Xử lý dữ liệu văn bản (Vectorization)", objective: "Chuẩn bị dữ liệu phi cấu trúc cho ML.", description: "Sử dụng TF-IDF hoặc Bag-of-Words.", image: "https://placehold.co/400x200/f5d0fe/701a75?text=Vectorization" },
-                        { name: "Bài 10: Xây dựng mô hình phân loại văn bản", objective: "Áp dụng ML cho các ứng dụng NLP.", description: "Tạo mô hình phân loại tin nhắn spam.", image: "https://placehold.co/400x200/c7f0db/0e7490?text=Phân+loại+Text" },
-                        { name: "Bài 11: Trực quan hóa kết quả ML", objective: "Sử dụng Matplotlib/Seaborn.", description: "Vẽ biểu đồ Confusion Matrix để đánh giá mô hình.", image: "https://placehold.co/400x200/d8b4fe/6b21a8?text=Trực+quan+ML" },
-                        { name: "Bài 12: Lưu trữ và Tải mô hình", objective: "Sử dụng Pickle hoặc Joblib để triển khai.", description: "Lưu mô hình đã huấn luyện để sử dụng lại sau này.", image: "https://placehold.co/400x200/a5f3fc/0d9488?text=Lưu+Model" }
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+                        { 
+                            name: "Bài 1: Giới thiệu Python",
+                            objective: "Cài đặt môi trường và cú pháp cơ bản.",
+                            description: "Biến, kiểu dữ liệu, toán tử và in ra màn hình.",
+                            image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Python+Intro"
+                        },
+
+             
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 2, title: "Level 2: Xử lý dữ liệu cơ bản",
+                    levelObjective: "Làm quen dữ liệu dạng số & mảng; tính toán, biểu đồ. Thư viện & Công cụ: numpy, matplotlib. Dự án tiêu biểu: Vẽ biểu đồ điểm thi / nhiệt độ; trực quan dữ liệu.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Giới thiệu NumPy", objective: "Làm việc với mảng số.", description: "Tạo, truy cập và thao tác với ndarray.", image: "https://placehold.co/400x200/fefce8/a16207?text=NumPy" },
+                        { name: "Bài 2: Thống kê cơ bản", objective: "Tính mean/median/std.", description: "Tính các chỉ số thống kê cơ bản trên dữ liệu.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Statistics" },
+                        { name: "Bài 3: Vẽ biểu đồ với Matplotlib", objective: "Trực quan hóa dữ liệu.", description: "Vẽ line/bar/scatter để minh họa dữ liệu.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Matplotlib" },
+                        { name: "Bài 4: Mini-project: Biểu đồ điểm", objective: "Tạo báo cáo hình ảnh cho dữ liệu mẫu.", description: "Nhập dữ liệu và trực quan hóa dưới dạng biểu đồ.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Chart" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 3, title: "Level 3: Làm việc với bảng dữ liệu",
+                    levelObjective: "Giới thiệu pandas, đọc file .csv, thống kê, xử lý dữ liệu. Thư viện & Công cụ: numpy, pandas, matplotlib. Dự án tiêu biểu: Phân tích dữ liệu học tập trong lớp học.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Giới thiệu Pandas", objective: "Series và DataFrame.", description: "Đọc/ghi CSV, truy vấn và lọc dữ liệu.", image: "https://placehold.co/400x200/f5f3ff/6b21a8?text=Pandas" },
+                        { name: "Bài 2: Làm sạch dữ liệu", objective: "Xử lý giá trị thiếu và dupes.", description: "Loại bỏ/điền giá trị thiếu, chuẩn hóa cột.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Clean+Data" },
+                        { name: "Bài 3: Thống kê nhóm", objective: "GroupBy và aggregate.", description: "Tổng hợp, pivot và tóm tắt dữ liệu.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=GroupBy" },
+                        { name: "Bài 4: Mini-project: Phân tích lớp học", objective: "Áp dụng Pandas để phân tích dữ liệu học sinh.", description: "Tạo báo cáo điểm, phân bố và insights.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Class+Analysis" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 4, title: "Level 4: Giới thiệu Machine Learning",
+                    levelObjective: "Giải thích khái niệm 'máy học'; tạo mô hình phân loại đơn giản. Thư viện & Công cụ: scikit-learn, numpy, pandas. Dự án tiêu biểu: Dự đoán 'học sinh có qua môn không' dựa trên điểm số.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Khái niệm ML", objective: "Phân loại vs hồi quy.", description: "Hiểu pipeline ML cơ bản.", image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=ML+Intro" },
+                        { name: "Bài 2: Chuẩn bị dữ liệu cho ML", objective: "Features & labels.", description: "Tiền xử lý và mã hóa dữ liệu.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Features" },
+                        { name: "Bài 3: Mô hình phân loại đơn giản", objective: "Áp dụng Logistic Regression hoặc Decision Tree.", description: "Huấn luyện và đánh giá hiệu suất.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Classifier" },
+                        { name: "Bài 4: Mini-project: Dự đoán đỗ/trượt", objective: "Xây dựng model dự đoán qua môn.", description: "Chuẩn bị dữ liệu, huấn luyện và đánh giá.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Predict" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 5, title: "Level 5: Phân loại hình ảnh đơn giản",
+                    levelObjective: "Giới thiệu nhận diện hình ảnh với AI. Thư viện & Công cụ: Teachable Machine, tensorflow, numpy. Dự án tiêu biểu: Nhận diện trái cây hoặc đồ vật.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Ảnh và ma trận", objective: "Đại diện ảnh bằng mảng số.", description: "Đọc, hiển thị và thao tác ảnh bằng NumPy.", image: "https://placehold.co/400x200/fefce8/a16207?text=Images" },
+                        { name: "Bài 2: Giới thiệu Teachable Machine", objective: "Huấn luyện model nhận diện cơ bản.", description: "Tạo dataset nhỏ và huấn luyện mô hình.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Teachable+Machine" },
+                        { name: "Bài 3: Triển khai TF/Lite", objective: "Chuyển model và dùng offline.", description: "Xuất model và tích hợp vào ứng dụng đơn giản.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=TF+Lite" },
+                        { name: "Bài 4: Mini-project: Nhận diện trái cây", objective: "Xây dựng app nhận diện một vài loại trái cây.", description: "Thu thập ảnh, huấn luyện và kiểm thử.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Fruit+Detect" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 6, title: "Level 6: Computer Vision cơ bản",
+                    levelObjective: "Làm việc với camera, ảnh, nhận diện khuôn mặt. Thư viện & Công cụ: opencv, mediapipe. Dự án tiêu biểu: Đếm số người trong ảnh / nhận diện khuôn mặt qua webcam.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: OpenCV cơ bản", objective: "Đọc/ghi ảnh và thao tác ảnh.", description: "Tiền xử lý, threshold và filter.", image: "https://placehold.co/400x200/e9d5ff/6b21a8?text=OpenCV" },
+                        { name: "Bài 2: Camera và stream", objective: "Lấy hình từ webcam.", description: "Bắt frame và xử lý thời gian thực.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Webcam" },
+                        { name: "Bài 3: Nhận diện khuôn mặt (Mediapipe)", objective: "Phát hiện khuôn mặt và keypoints.", description: "Sử dụng Mediapipe để nhận diện và vẽ box.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Mediapipe" },
+                        { name: "Bài 4: Mini-project: Đếm người", objective: "Đếm số người xuất hiện trong khung hình.", description: "Kết hợp detection và tracking.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=People+Count" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 7, title: "Level 7: Xử lý âm thanh & giọng nói",
+                    levelObjective: "Nhận dạng giọng nói, chuyển văn bản thành tiếng nói. Thư viện & Công cụ: speech_recognition, gTTS, pyttsx3. Dự án tiêu biểu: Trợ lý ảo biết nói & nghe.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Xử lý audio cơ bản", objective: "Đọc file âm thanh và tính năng cơ bản.", description: "Đọc/waveform và tính năng MFCC đơn giản.", image: "https://placehold.co/400x200/fef9c3/a16207?text=Audio" },
+                        { name: "Bài 2: Speech-to-text", objective: "Nhận diện giọng nói cơ bản.", description: "Sử dụng speech_recognition để chuyển giọng nói thành văn bản.", image: "https://placehold.co/400x200/bae6fd/0369a1?text=STT" },
+                        { name: "Bài 3: Text-to-speech", objective: "Chuyển văn bản thành giọng nói.", description: "Sử dụng gTTS/pyttsx3 để phát âm thanh từ text.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=TTS" },
+                        { name: "Bài 4: Mini-project: Trợ lý ảo", objective: "Kết hợp STT và TTS để tạo trợ lý đơn giản.", description: "Lắng nghe lệnh và phản hồi bằng giọng nói.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Assistant" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 8, title: "Level 8: Xử lý ngôn ngữ tự nhiên (NLP)",
+                    levelObjective: "Làm việc với văn bản, chatbot thông minh. Thư viện & Công cụ: nltk, re, transformers (light). Dự án tiêu biểu: Chatbot tư vấn học tập hoặc gợi ý phim.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Tiền xử lý văn bản", objective: "Tokenization, stopwords và normalization.", description: "Sử dụng NLTK để làm sạch và tiền xử lý văn bản.", image: "https://placehold.co/400x200/fef9c3/a16207?text=Text+Prep" },
+                        { name: "Bài 2: Vectorization", objective: "Bag-of-Words và TF-IDF.", description: "Chuyển văn bản thành đặc trưng số.", image: "https://placehold.co/400x200/bae6fd/0369a1?text=TF-IDF" },
+                        { name: "Bài 3: Chatbot cơ bản", objective: "Tạo rule-based hoặc retrieval chatbot.", description: "Xây dựng chatbot trả lời theo mẫu hoặc tìm câu trả lời phù hợp.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Chatbot" },
+                        { name: "Bài 4: Mini-project: Chatbot tư vấn", objective: "Xây dựng chatbot trợ giúp học tập.", description: "Tạo bot trả lời câu hỏi học tập hoặc gợi ý tài liệu.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Edu+Bot" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 9, title: "Level 9: Deep Learning cơ bản",
+                    levelObjective: "Hiểu neuron, huấn luyện mô hình mạng neural nhỏ. Thư viện & Công cụ: tensorflow, keras, numpy, matplotlib. Dự án tiêu biểu: Nhận diện chữ số viết tay (MNIST).",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Giới thiệu Neural Network", objective: "Khái niệm neuron và layer.", description: "Xây dựng mạng đơn giản và forward pass.", image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=NN+Intro" },
+                        { name: "Bài 2: Keras cơ bản", objective: "Định nghĩa mô hình và huấn luyện.", description: "Xây dựng model, compile và fit trên tập mẫu.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Keras" },
+                        { name: "Bài 3: MNIST hands-on", objective: "Huấn luyện model nhận diện chữ số.", description: "Chuẩn bị dữ liệu và đánh giá mô hình.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=MNIST" },
+                        { name: "Bài 4: Mini-project: Digit Recognizer", objective: "Triển khai model đơn giản nhận dạng chữ số.", description: "Tạo một demo web hoặc app đoán chữ số viết tay.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Digits" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 10, title: "Level 10: AI ra quyết định (Reinforcement Learning)",
+                    levelObjective: "Học qua thử-sai, mô phỏng hành vi thông minh. Thư viện & Công cụ: gym, numpy, matplotlib. Dự án tiêu biểu: AI điều khiển xe tránh vật cản ảo.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Khái niệm RL", objective: "Agent, environment, reward.", description: "Hiểu cơ chế học tăng cường cơ bản.", image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=RL+Intro" },
+                        { name: "Bài 2: OpenAI Gym basics", objective: "Tạo và tương tác với environment.", description: "Làm quen với observation và action space.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Gym" },
+                        { name: "Bài 3: Q-Learning đơn giản", objective: "Áp dụng thuật toán Q-Learning.", description: "Huấn luyện agent trong môi trường nhỏ.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Q-Learning" },
+                        { name: "Bài 4: Mini-project: Xe tránh vật cản", objective: "Xây dựng simulation và agent điều khiển.", description: "Huấn luyện agent để tránh chướng ngại vật.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=RL+Project" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 11, title: "Level 11: Ứng dụng AI với IoT / Robot",
+                    levelObjective: "Kết hợp AI với thiết bị vật lý. Thư viện & Công cụ: opencv, tensorflow, Raspberry Pi / Arduino. Dự án tiêu biểu: Robot nhận diện vật cản / vẫy tay.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Kết nối Raspberry Pi", objective: "Chuẩn bị phần cứng và môi trường.", description: "Cài đặt OS, camera và thư viện cần thiết.", image: "https://placehold.co/400x200/fefce8/a16207?text=Raspberry+Pi" },
+                        { name: "Bài 2: Triển khai model trên edge", objective: "Chạy model TF Lite trên Pi.", description: "Tối ưu và chạy inference trên thiết bị.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Edge+AI" },
+                        { name: "Bài 3: Tương tác cảm biến và actuator", objective: "Đọc sensor và điều khiển thiết bị.", description: "Kết hợp input sensor để điều khiển hành vi.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Sensors" },
+                        { name: "Bài 4: Mini-project: Robot nhận diện", objective: "Tạo robot nhỏ nhận diện vật và phản ứng.", description: "Kết hợp vision và điều khiển động cơ.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Robot+AI" }
+                    ]
+                },
+                {
+                    courseId: 9, levelUnit: 12, title: "Level 12: Dự án tổng hợp (AI for Good)",
+                    levelObjective: "Tích hợp kiến thức toàn chương trình. Thư viện & Công cụ: Tự chọn (kết hợp các thư viện đã học). Dự án tiêu biểu: Dự án xã hội: Phân loại rác, phát hiện ô nhiễm, bảo vệ môi trường.",
+                    productLink: "",
+                    lessonPlanLink: "",
+                    slideLink: "",
+                    quizLink: "",
+                    lessons: [
+                        { name: "Bài 1: Lên ý tưởng dự án cuối", objective: "Xác định vấn đề và scope dự án.", description: "Chọn chủ đề xã hội và cách AI có thể giải quyết.", image: "https://placehold.co/400x200/e9f5ff/0b69d3?text=Project+Idea" },
+                        { name: "Bài 2: Thu thập & xử lý dữ liệu", objective: "Chuẩn bị dataset cho dự án.", description: "Thu thập, làm sạch và tổ chức dữ liệu.", image: "https://placehold.co/400x200/fca5a5/9f1239?text=Dataset" },
+                        { name: "Bài 3: Xây dựng & kiểm thử model", objective: "Huấn luyện mô hình và đánh giá.", description: "Chạy thử nghiệm, tối ưu và đo lường hiệu quả.", image: "https://placehold.co/400x200/dbeafe/1d4ed8?text=Model+Build" },
+                        { name: "Bài 4: Triển khai và thuyết trình", objective: "Triển khai prototype và trình bày kết quả.", description: "Chuẩn bị demo, slides và báo cáo final.", image: "https://placehold.co/400x200/d9f99d/3f6212?text=Demo" }
                     ]
                 },
                 // Thêm các bài học mẫu cho Robot Cấp 2 (ID 6, Level 11) - 12 bài đầy đủ
@@ -1349,7 +1570,7 @@
                     colorClass: "color-group-7",
                     timelineHeaderClass: "timeline-header-7",
                     curriculum: [
-                        { unit: 1, name: "Giới thiệu Python & Pandas" }, { unit: 2, name: "Phân tích dữ liệu cơ bản" }, { unit: 3, name: "TensorFlow Lite & Mobile" },
+                        { unit: 1, name: "Giới thiệu Python" }, { unit: 2, name: "Phân tích dữ liệu cơ bản" }, { unit: 3, name: "TensorFlow Lite & Mobile" },
                         { unit: 4, name: "Xử lý Ngôn ngữ Tự nhiên (NLP)" }, { unit: 5, name: "Tạo mô hình Machine Learning" }, { unit: 6, name: "Tạo mô hình Machine Learning" },
                         { unit: 7, name: "Ứng dụng AI với Raspberry Pi" }, { unit: 8, name: "Ứng dụng AI với Raspberry Pi" }, { unit: 9, name: "Tạo Chatbot Python" },
                         { unit: 10, name: "Mạng nơ-ron cơ bản" }, { unit: 11, name: "Dự án nhận dạng hình ảnh" }, { unit: 12, name: "Dự án hoàn chỉnh" }
@@ -1386,12 +1607,17 @@
                     
                     // Determine level objective: prefer explicit levelObjective, else fall back to first lesson objective, else default
                     const levelObjective = levelDetail.levelObjective || (levelDetail.lessons && levelDetail.lessons.length ? levelDetail.lessons[0].objective : '') || 'Mục tiêu Level đang được cập nhật.';
+                    // For Course 9 (Phát triển Ứng dụng AI) we show a formatted levelObjective similar to courseId 8
+                    let levelObjectiveBlock = `<p class="text-sm text-slate-600 mt-1">${levelObjective}</p>`;
+                    if (courseId === 9) {
+                        levelObjectiveBlock = `<div class="mt-1 text-sm text-slate-700">${formatLessonText(levelObjective)}</div>`;
+                    }
 
-                    contentHTML = `
-                        <div class="space-y-6">
-                            <div class="p-4 bg-white rounded-lg border border-slate-200">
-                                <h4 class="text-md font-semibold text-slate-700">Mục tiêu Level</h4>
-                                <p class="text-sm text-slate-600 mt-1">${levelObjective}</p>
+                        contentHTML = `
+                            <div class="space-y-6">
+                                <div class="p-4 bg-white rounded-lg border border-slate-200">
+                                    <h4 class="text-md font-semibold text-slate-700">Mục tiêu Level</h4>
+                                    ${levelObjectiveBlock}
                                 <div class="mt-4 pt-4 border-t border-slate-200">
                                     <h4 class="text-md font-semibold text-slate-700 mb-2">Link sản phẩm của Level</h4>
                                     <div class="flex gap-2">
@@ -1425,10 +1651,11 @@
                         const mergedLesson = getMergedLesson(lesson, courseId, levelUnit, index);
                         const completedLessons = loadCompletedLessons();
                         const isDone = !!(completedLessons[courseId] && completedLessons[courseId][levelUnit] && completedLessons[courseId][levelUnit][index]);
-                        // Prepare formatted objective/description for AI Level 1 to improve readability
+                        // Prepare formatted objective/description for AI courses to improve readability
                         let objectiveBlock = `<p class="text-sm font-semibold text-blue-600">Mục tiêu: ${lesson.objective}</p>`;
                         let descriptionBlock = `<p class="text-sm text-slate-600 mt-1">${lesson.description}</p>`;
-                        if (courseId === 8 && (levelUnit === 1 || levelUnit === 2)) {
+                        // Apply the same formatted display as courseId 8 to courseId 9 as well
+                        if ((courseId === 8 && (levelUnit === 1 || levelUnit === 2)) || courseId === 9) {
                             // use formatted HTML (labels bolded and sections separated)
                             objectiveBlock = `<p class="text-sm font-semibold text-blue-600">Mục tiêu</p><div class="mt-1 text-sm text-slate-700">${formatLessonText(lesson.objective)}</div>`;
                             descriptionBlock = `<div class="mt-2 text-sm text-slate-600">${formatLessonText(lesson.description)}</div>`;
@@ -1577,7 +1804,7 @@
                 localStorage.setItem('levelProducts', JSON.stringify(obj));
             }
 
-            // Helper to format lesson objective/description for readability (used for AI Level 1)
+            // Helper to format lesson objective/description for readability
             function formatLessonText(text) {
                 if (!text) return '';
                 // Emphasize common section labels and add breaks for readability
@@ -1585,10 +1812,16 @@
                 out = out.replace(/Dự án:/g, '<strong>Dự án:</strong>');
                 out = out.replace(/Chủ đề:/g, '<strong>Chủ đề:</strong>');
                 out = out.replace(/Sản phẩm:/g, '<strong>Sản phẩm:</strong>');
+                out = out.replace(/Thư viện & Công cụ:/g, '<strong>Thư viện & Công cụ:</strong>');
+                out = out.replace(/Dự án tiêu biểu:/g, '<strong>Dự án tiêu biểu:</strong>');
+                out = out.replace(/Mục tiêu:/g, '<strong>Mục tiêu:</strong>');
+                // preserve existing line breaks
                 out = out.replace(/\n/g, '<br>');
                 // Ensure each labeled section starts on a new line
                 out = out.replace(/<strong>/g, '<br><strong>');
+                // Trim leading <br> and collapse excessive breaks
                 out = out.replace(/^<br>/, '');
+                out = out.replace(/(<br>\s*){3,}/g, '<br><br>');
                 return out;
             }
 
